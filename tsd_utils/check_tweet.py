@@ -36,7 +36,7 @@ class CheckTweet:
                                                                                          "TweetCiteBot. This may be " \
                                                                                          "better truncated. --> "
         return tweet_obj
-c
+
     def gen_date(self, use_mdy):
         if not self.tweet:
             raise ValueError("No valid tweet")
