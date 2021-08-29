@@ -1,0 +1,41 @@
+date_types = {
+    'use mdy dates',
+    'mdy',
+    'use mdy',
+    'usemdy',
+    'usemdydates'
+}
+
+templates_to_search_through = {
+    'cite web',
+    'citeweb',
+    'c web',
+    'cita web',
+    'weblink',
+    'ref web',
+    'citweb',
+    'cw',
+    'web cite',
+    'web citation',
+    'cite w',
+    'cit web',
+    'cite url',
+    'cite blog',
+    'cite web.',
+    'cite webpage',
+    'web reference',
+    'web-reference',
+    'cite wb',
+    'cite we',
+    'citat web',
+    'cite-web',
+    'webbref',
+    'cite website',
+    'cite website article',
+    'chú thích web',
+    'citace elektronické monografie',
+    'citeer web',
+    'یادکرد وب',
+    '웹 인용',
+    'cite web/lua'
+}
