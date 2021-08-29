@@ -1,3 +1,4 @@
+#coding: utf-8
 import twitter, secrets, re, textwrap, waybackpy
 from datetime import datetime
 from twitter.error import TwitterError
@@ -24,13 +25,18 @@ class CheckTweet:
             raise ValueError("No valid tweet")
         url_reg = r'((?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?t\.co\/([a-zA-Z0-9])*'
         sec_pattern = r'/\r|\n/'
-        tweet_text = re.sub(url_reg, '', self.tweet.text)
-        tweet_text = re.sub(sec_pattern, ' ', tweet_text)
-        tweet_text = textwrap.shorten(tweet_text, width=40, placeholder="...")
+        tweet_text = re.sub(url_reg, '', self.tweet.text, re.UNICODE)
+        tweet_text = re.sub(sec_pattern, ' ', tweet_text, re.UNICODE)
+        #print("After edit" + tweet_text)
+        #tweet_text = textwrap.shorten(tweet_text, width=40, placeholder="...")
+        #self.truncateUTF8length(tweet_text, 15)
         tweet_obj = "{{cite tweet|number=" + str(
-            self.id) + "|user=" + self.tweet.user.screen_name + "|title=" + tweet_text
+            self.id) + "|user=" + self.tweet.user.screen_name + "|title=" + tweet_text + "<!-- full text of tweet (" \
+                                                                                         "excluding links) added by " \
+                                                                                         "TweetCiteBot. This may be " \
+                                                                                         "better truncated. --> "
         return tweet_obj
-
+c
     def gen_date(self, use_mdy):
         if not self.tweet:
             raise ValueError("No valid tweet")
@@ -94,3 +100,6 @@ class CheckTweet:
                               + "|fix-attempted=yes" + "|bot=TweetCiteBot}}", text)
                 content_changed = True
                 return [content_changed, code]
+
+    def truncateUTF8length(self, unicodeStr, maxsize):
+        return str(unicodeStr.encode("utf-8")[:maxsize], "utf-8", errors="ignore")
