@@ -140,22 +140,15 @@ def convert(text, api, archive_urls):
                                              + "|fix-attempted=yes" + "|bot=TweetCiteBot}}")
                                 content_changed = True
 
-    #what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?<\/ref>'
     what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
     matches = re.finditer(what_to_search, str(text), flags=re.IGNORECASE)
     for ind in matches:
         dead = False
 
         tweet = CheckTweet(ind.group(2))
-        # tweet = api.GetStatus(ind.group(2))
         if tweet:  # tweet live
-            has_archive_url = False
-            verbose = False
             tweet_obj = "<ref>"
             tweet_obj += tweet.clean_tweet()
-            date_format = '%-d %B %Y'
-            if use_mdy:
-                date_format = '%B %-d, %Y'
             tweet_obj += tweet.gen_date(use_mdy)
             tweet_obj += "}}</ref>"
             text = re.sub(re.escape(ind.group(0)), tweet_obj, text, flags=re.UNICODE)
@@ -163,7 +156,6 @@ def convert(text, api, archive_urls):
                 content_changed = True
         else:  # tweet dead
             print("Tweet dead")
-            pass
     return [content_changed, text]
 
 

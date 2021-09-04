@@ -1,27 +1,34 @@
-import sys, twitter, pywikibot
-from searching import Get_Results
+import sys, twitter, pywikibot, requests
+from search import Get_Results
 import secrets
 import tsd_utils.utils2
 
+
+class TweetBot:
+    def __init__(self, search):
+        self.site = pywikibot.Site()
+        self.api = api = twitter.Api(consumer_key=secrets.consumer_key,
+                                     consumer_secret=secrets.consumer_secret,
+                                     access_token_key=secrets.oauth_access_token,
+                                     access_token_secret=secrets.oauth_access_token_secret)
+        self.archive_urls = False
+        self.results = Get_Results(search).process()
+
+    def run(self):
+        for article in self.results:
+            page = pywikibot.Page(self.site, article)
+            print("Working with " + article)
+            text = page.text
+            try:
+                tsd_utils.utils2.save_edit(self.site, self.api, page, self.archive_urls, text)
+            except ValueError as err:
+                print(err)
+
+
 def main():
-    site = pywikibot.Site()
+    bot = TweetBot('insource:"\<ref\>https?://twitter\.com/"')
+    bot.run()
 
-    api = twitter.Api(consumer_key=secrets.consumer_key,
-                      consumer_secret=secrets.consumer_secret,
-                      access_token_key=secrets.oauth_access_token,
-                      access_token_secret=secrets.oauth_access_token_secret)
-
-    archive_urls = False
-    search = Get_Results('insource:"\<ref\>https?://twitter\.com/"')
-    results = search.process()
-    for article in results:
-        page = pywikibot.Page(site, article)
-        print("Working with " + article)
-        text = page.text
-        try:
-            tsd_utils.utils2.save_edit(site, api, page, archive_urls, text)
-        except ValueError as err:
-            print(err)
 
 if __name__ == '__main__':
     try:
