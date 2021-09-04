@@ -141,7 +141,7 @@ def convert(text, api, archive_urls):
                                 content_changed = True
 
     #what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?<\/ref>'
-    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
+    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
     matches = re.finditer(what_to_search, str(text), flags=re.IGNORECASE)
     for ind in matches:
         dead = False
