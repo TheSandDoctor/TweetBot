@@ -176,15 +176,12 @@ def save_edit(site, api, page, archive_urls, text):
                     break  # can edit
             print("\n\nPage editing blocked as template preventing edit is present.\n\n")
             return
-    content_changed, text = convert(page.text, api,
-                                    archive_urls)  # combine_converts(site, api, page, archive_urls, text)
-    # print(content_changed)
+    content_changed, text = convert(page.text, api, archive_urls)
     if content_changed:
         page.text = text
         if not call_home(site):
             raise ValueError("Kill switch on-wiki is false. Terminating program.")
-        edit_summary = """Converted Tweet
-         URLs to [[Template:Cite tweet|{{cite tweet}}]] Mistake? [[User talk:TheSandDoctor|msg TSD!]] (please mention that this is the PyEdition!)"""
-        time = 0
+        edit_summary = "Converted Tweet URLs to [[Template:Cite tweet|{{cite tweet}}]] Mistake? [[User " \
+                       "talk:TheSandDoctor|msg TSD!]] "
         page.save(edit_summary)
         print("Saved")
