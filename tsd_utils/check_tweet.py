@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 import twitter, secrets, re, textwrap, waybackpy
 from datetime import datetime
 from twitter.error import TwitterError
@@ -27,14 +27,20 @@ class CheckTweet:
         sec_pattern = r'/\r|\n/'
         tweet_text = re.sub(url_reg, '', self.tweet.text, re.UNICODE)
         tweet_text = re.sub(sec_pattern, ' ', tweet_text, re.UNICODE)
-        #print("After edit" + tweet_text)
-        #tweet_text = textwrap.shorten(tweet_text, width=40, placeholder="...")
-        #self.truncateUTF8length(tweet_text, 15)
+        # print("After edit" + tweet_text)
+        # tweet_text = textwrap.shorten(tweet_text, width=40, placeholder="...")
+        # self.truncateUTF8length(tweet_text, 15)
         tweet_obj = "{{cite tweet|number=" + str(
-            self.id) + "|user=" + self.tweet.user.screen_name + "|title=" + tweet_text + "<!-- full text of tweet (" \
+            self.id) + "|user=" + self.tweet.user.screen_name + "|title=" + tweet_text + "<!-- full text of tweet " \
+                                                                                         "that Twitter returned to " \
+                                                                                         "the bot (" \
                                                                                          "excluding links) added by " \
                                                                                          "TweetCiteBot. This may be " \
-                                                                                         "better truncated. --> "
+                                                                                         "better truncated or may " \
+                                                                                         "need expanding (TW limits " \
+                                                                                         "responses to 140 " \
+                                                                                         "characters) or case " \
+                                                                                         "changes. --> "
         return tweet_obj
 
     def gen_date(self, use_mdy):
