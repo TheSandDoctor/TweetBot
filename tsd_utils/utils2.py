@@ -54,6 +54,16 @@ def get_next_iter_item(some_iterable, window=1):
     nexts = islice(nexts, window, None)
     return zip_longest(items, nexts)
 
+def has_a_param(template, param=None, alt=None):
+    if alt:
+        if template.has(param):
+            return param
+        elif template.has(alt):
+            return alt
+    if template.has(param):
+        return param
+    else:
+        return None
 
 def convert(text, api, archive_urls):
     """
@@ -89,30 +99,33 @@ def convert(text, api, archive_urls):
                             # shouldn't be a deadlink (if it is, doing all this for nothing)
                             print("FOUND DEADLINK......SKIPPING!")
                             continue
+                    print("We have a tweet")
                     tweet = CheckTweet(match.group(2))
                     if tweet:  # tweet is live
                         has_archive_url = False
                         content_changed = True
                         tweet_obj = tweet.clean_tweet()
-                        if template.has("accessdate") or template.has("access-date"):
-                            # tweet_accessdate = template.get("accessdate").value
-                            tweet_obj += "|accessdate=" + str(template.get("accessdate").value)
+                        tresult = has_a_param(template, "accessdate", "access-date")
+                        if tresult:
+                            tweet_obj += "|accessdate=" + str(template.get(tresult).value)
                             if verbose:
                                 print("Has accessdate")
-                        if template.has("archivedate") or template.has("archive-date"):
+                        tresult = has_a_param(template, "archivedate", "archive-date")
+                        if tresult:
                             if verbose:
                                 print("Has archive date")
                             #    tweet_archivedate = template.get("archivedate").value
-                            tweet_obj += "|archivedate=" + str(template.get("archivedate").value)
+                            tweet_obj += "|archivedate=" + str(template.get(tresult).value)
                         if template.has("language"):
                             # tweet_language = template.get("language").value
                             tweet_obj += "|language=" + str(template.get("language").value)
                             if verbose:
                                 print("Has language")
-                        if template.has("archiveurl") or template.has('archive-url'):
+                        tresult = has_a_param(template, "archiveurl", "archive-url")
+                        if tresult:
                             has_archive_url = True
                             # tweet_archiveurl = template.get("archiveurl").value
-                            tweet_obj += "|archiveurl=" + str(template.get("archiveurl").value)
+                            tweet_obj += "|archiveurl=" + str(template.get(tresult).value)
                             if verbose:
                                 print("Has archiveurl")
                         if template.has("date"):
@@ -122,7 +135,9 @@ def convert(text, api, archive_urls):
                                 print("Has date")
                         else:
                             tweet_obj += tweet.gen_date(use_mdy)
-                            tweet_obj += "}}"
+                        tweet_obj += "}}"
+                        print(tweet_obj)
+                        code.replace(template, tweet_obj)
                     else:  # tweet is dead
                         date_format = '%B %Y'
                         if not template.has("archiveurl") or not template.has(
@@ -139,8 +154,8 @@ def convert(text, api, archive_urls):
                                              str(template) + "{{dead link|date=" + datetime.now().strftime(date_format)
                                              + "|fix-attempted=yes" + "|bot=TweetCiteBot}}")
                                 content_changed = True
-
-    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
+    text = str(code)
+    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?\]?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
     matches = re.finditer(what_to_search, str(text), flags=re.IGNORECASE)
     for ind in matches:
         dead = False
