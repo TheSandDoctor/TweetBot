@@ -1,0 +1,11 @@
+secrets.py
+user-password.py
+user-config.py
+testing3.py
+*.lwp
+*.ctrl
+.DS_Store
+venv/
+.idea/
+apicache-py3/
+__pycache__/
