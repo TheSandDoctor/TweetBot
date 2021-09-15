@@ -89,7 +89,7 @@ def convert(text, api, archive_urls):
             if template.has("url"):
                 url = template.get("url").value
                 match = re.search(
-                    r'(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)',
+                    r'(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\/photo\/\d+)?',
                     str(url))
                 if match:  # it is a twitter URL
                     if next_template:
@@ -99,7 +99,7 @@ def convert(text, api, archive_urls):
                             # shouldn't be a deadlink (if it is, doing all this for nothing)
                             print("FOUND DEADLINK......SKIPPING!")
                             continue
-                    print("We have a tweet")
+                    #print("We have a tweet")
                     tweet = CheckTweet(match.group(2))
                     if tweet:  # tweet is live
                         has_archive_url = False
@@ -136,7 +136,7 @@ def convert(text, api, archive_urls):
                         else:
                             tweet_obj += tweet.gen_date(use_mdy)
                         tweet_obj += "}}"
-                        print(tweet_obj)
+                        #print(tweet_obj)
                         code.replace(template, tweet_obj)
                     else:  # tweet is dead
                         date_format = '%B %Y'
@@ -155,7 +155,7 @@ def convert(text, api, archive_urls):
                                              + "|fix-attempted=yes" + "|bot=TweetCiteBot}}")
                                 content_changed = True
     text = str(code)
-    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?: +)?(?: +)?\]?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
+    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?:\/photo\/\d+)?(?: +)?(?: +)?\]?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
     matches = re.finditer(what_to_search, str(text), flags=re.IGNORECASE)
     for ind in matches:
         dead = False
@@ -188,7 +188,7 @@ def save_edit(site, api, page, archive_urls, text):
         page.text = text
         if not call_home(site):
             raise ValueError("Kill switch on-wiki is false. Terminating program.")
-        edit_summary = "Converted Tweet URLs to [[Template:Cite tweet|{{cite tweet}}]] Mistake? [[User " \
-                       "talk:TheSandDoctor|msg TSD!]] "
+        edit_summary = "Converted Tweet URLs to [[Template:Cite tweet|{{cite tweet}}]]. See [[WP:TCBE]] for further " \
+                       "explanation. Mistake? [[User talk:TheSandDoctor|msg TSD!]] "
         page.save(edit_summary)
         print("Saved")
