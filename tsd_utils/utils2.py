@@ -155,7 +155,7 @@ def convert(text, api, archive_urls):
                                              + "|fix-attempted=yes" + "|bot=TweetCiteBot}}")
                                 content_changed = True
     text = str(code)
-    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?:\/photo\/\d+)?(?: +)?(?: +)?\]?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
+    what_to_search = r'<ref>(?: +)?\[?(?:(?:\s)*https?:\/\/)?(?:www\.)?(?:\s)*?(?:mobile\.)?twitter\.com\/(?:#!\/)?@?([^\/\?\s]*)\/status\/([{\d+:\d+]+)(?:\?s=\d+?)?(?:\/photo\/\d+[^\<]*)?(?:\?lang=[^\<]*)?(?: +)?(?: +)?\]?(?: +)?(?:\{\{bare url inline\|date=\w+ \d+\}\})?<\/ref>'
     matches = re.finditer(what_to_search, str(text), flags=re.IGNORECASE)
     for ind in matches:
         dead = False
